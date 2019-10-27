@@ -1,0 +1,188 @@
+HTTP/1.1 200 Ok
+Server: micro_httpd
+Cache-Control: no-cache
+Date: Fri, 25 Oct 2019 15:34:14 GMT
+Content-Type: text/html
+Connection: close
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Event Log</title>
+
+<script src="jquery-1.7.1.min.js"></script>
+<script src="json2.js"></script>
+<script src="main_arris.js"></script>
+
+<script>
+$(document).ready(function(){
+	$("#htmlheader").load("htmlheader.htm");
+});
+</script>
+<div id="htmlheader"></div>
+</head>
+<body>
+ <!-- Header Area Begin -->
+<div class="header">
+
+<script>
+$(document).ready(function(){
+	$("#pageheaderA").load("pageheaderA.htm");       
+});
+</script>
+
+         <div id="binnacleWrapper1" class="binnacleItems_hide" style="display:none;">
+            <div id="binnacleWrapper2" class="binnacleItems_hide" style="display:none;">
+                <div id="binnacleWrapperLeft"><img src="px1_Ux.png" alt="" class="binnacleWrapperShim"></div>
+                <div id="binnacleWrapperRight"><img src="px1_Ux.png" alt="" class="binnacleWrapperShim"></div>
+                <div id="binnacleWrapperMiddle">
+                    <div id="binnacleInnards">
+                            <div id="binnacleIndicatorWrap"></div>
+                    <div id="binnacleModelName"><span id="thisModelNumberIs">CM8200B</span></div>
+                    </div>
+                </div>
+            <!-- end binnacleWrapper1/2 -->
+            </div>
+        </div>
+
+<div id="pageheaderA"></div>
+
+<!--gap--><div id="tmtg"><div class="gap1"><div class="gap2"><div class="gap3"><div class="gap4"></div></div></div></div></div>
+
+                <div id="tmg1"><div id="tmg2"><div id="tmg3"><div id="tmg4"><div id="tmg5"><div id="tmg6">
+
+<div id="topMenu"></div>
+
+<!-- START pageheaderB.htm ADDITIONS -->
+                <!-- end divs for tmg -->
+                </div></div></div></div></div></div>
+
+                <!--gap--><div id="tmbg"><div class="gap1"><div class="gap2"><div class="gap3"><div class="gap4"></div></div></div></div></div>
+
+                <div id="bg1"><div id="bg2"><div id="bg3"><div id="bg4">
+<!-- END pageheaderB.htm ADDITIONS -->
+
+</div> <!-- End Header -->
+
+	<div class="container">
+		<div class="subHeader">
+        	<div class="subHeadcontent">Event Log</div>
+        </div>
+        
+	<div class="breadcrumbs"> 
+    	<a href="cmeventlog.html">Status</a> > Event Log 
+    </div>
+
+	<div class="content">
+		<div class="introText">
+        <p>The table below contains the log of events that the CM8200B has detected. This log can be important to the service provider to help diagnose and correct problems, if any should occur.
+		</p>
+        </div>
+
+<form action="/goform/RgEventLog.pl" method="post" name="RgEventLog">
+
+      <center>
+            <table class='simpleTable'>
+                <tr><th colspan="1"><small>Date Time</small></th>
+        	<th><small>Event ID</small></th>
+                <th><small>Event Level</small></th>
+                <th><small>Description</small></td>
+                </tr> 
+               <tr>
+<td>10/25/2019 15:33</td>
+<td align='right'>82000500</td>
+<td align='center'>3</td>
+<td>"Started Unicast Maintenance Ranging - No Response received - T3 time-out;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=XX:XX:XX:XX:XX:XX;CM-QOS=1.1;CM-VER=3.1;"</td>
+</tr>
+<tr>
+<td>10/25/2019 15:25</td>
+<td align='right'>82000200</td>
+<td align='center'>3</td>
+<td>"No Ranging Response received - T3 time-out;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=XX:XX:XX:XX:XX:XX;CM-QOS=1.1;CM-VER=3.1;"</td>
+</tr>
+<tr>
+<td>10/25/2019 15:25</td>
+<td align='right'>82000800</td>
+<td align='center'>3</td>
+<td>"16 consecutive T3 timeouts while trying to range on upstream channel 0;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=XX:XX:XX:XX:XX:XX;CM-QOS=1.1;CM-VER=3.1;"</td>
+</tr>
+<tr>
+<td>10/25/2019 15:25</td>
+<td align='right'>82000600</td>
+<td align='center'>3</td>
+<td>"Unicast Maintenance Ranging attempted - No response - Retries exhausted;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=XX:XX:XX:XX:XX:XX;CM-QOS=1.1;CM-VER=3.1;"</td>
+</tr>
+<tr>
+<td>10/25/2019 15:25</td>
+<td align='right'>82000500</td>
+<td align='center'>3</td>
+<td>"Started Unicast Maintenance Ranging - No Response received - T3 time-out;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=XX:XX:XX:XX:XX:XX;CM-QOS=1.1;CM-VER=3.1;"</td>
+</tr>
+<tr>
+<td>10/25/2019 15:19</td>
+<td align='right'>73040100</td>
+<td align='center'>6</td>
+<td>"TLV-11 - unrecognized OID;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=XX:XX:XX:XX:XX:XX;CM-QOS=1.1;CM-VER=3.1;"</td>
+</tr>
+<tr>
+<td>01/01/1970 00:00</td>
+<td align='right'>2436694066</td>
+<td align='center'>6</td>
+<td>"Honoring MDD; IP provisioning mode = IPv6"</td>
+</tr>
+<tr>
+<td>01/01/1970 00:00</td>
+<td align='right'>82000200</td>
+<td align='center'>3</td>
+<td>"No Ranging Response received - T3 time-out;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=XX:XX:XX:XX:XX:XX;CM-QOS=1.1;CM-VER=3.1;"</td>
+</tr>
+<tr>
+<td>01/01/1970 00:00</td>
+<td align='right'>84000100</td>
+<td align='center'>3</td>
+<td>"SYNC Timing Synchronization failure - Failed to acquire QAM/QPSK symbol timing;;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=00:00:00:00:00:00;CM-QOS=1.1;CM-VER=3.1;"</td>
+</tr>
+
+               </table>
+       </center>         
+		<!--% GetRgCfgValue("SnmpEventLog"); %-->        
+	<!--tr><td align="Center" colspan="3">
+		<input type="submit" value="Clear Log" disabled OnClick="ClearLog();" >
+		<input type="hidden" name="SnmpClearEventLog">
+	</td></tr-->	
+    
+</form>
+</div><!-- end Content Area -->
+
+<br clear="all" class="clearfloat">
+<div class="spacer40"></div>
+
+	</div> <!-- end container -->
+
+<!-- Footer and Sitemap -->
+<!-- end divs for bc -->
+</div></div></div></div>	
+<!--gap--><div id="bmtg"><div class="gap1"><div class="gap2"><div class="gap3"><div class="gap4"></div></div></div></div></div>
+
+<center><div id="siteMapBottom"></div></center>
+<script>
+$(document).ready(function(){
+        $("#footer").load("footer.htm");
+});
+</script>
+<div id="footer"></div>
+
+<!-- Insert Scripts Here -->
+<script>
+function ClearLog()
+{
+	window.document.RgEventLog.SnmpClearEventLog.value = 1;
+}
+</script>
+<!-- End Scripts -->
+
+</body>
+</html>
+
+
+
