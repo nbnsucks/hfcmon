@@ -94,7 +94,7 @@ public final class ModemCheck {
             }
 
             // Check if connected
-            boolean isConnected = shared.isInternetConnected(state);
+            Boolean isConnected = shared != null ? Boolean.valueOf(shared.isInternetConnected(state)) : null;
             state.isConnected = isConnected;
 
             // Write state if something succeeded
@@ -118,14 +118,29 @@ public final class ModemCheck {
                 packetErrors = packetErrors2;
             }
 
-            // Print very rough single line summary
-            logger.info("Internet connected? " + isConnectedToString(isConnected)
-                    + ". Downstream " + Math.round(state.downPowerAvg)
-                    + " dBmV/" + Math.round(state.downSnrAvg)
-                    + " dB. Upstream " + Math.round(state.upstreamPowerAvg)
-                    + " dBmV. " + packetErrorsTotal + " packet errors. Time taken " + (System.currentTimeMillis() - startTime)
-                    + "ms (" + state.timeTakenToGetStatusPage + "ms/" + state.timeTakenToGetEventLog
-                    + "ms).");
+            { // Print very rough single line summary
+                StringBuilder buffer = new StringBuilder();
+                if (isConnected != null) {
+                    buffer.append(isConnected.booleanValue() ? "Internet connected. " : "Internet disconnected. ");
+                }
+                buffer.append("Downstream ");
+                appendDownstreamPower(buffer, state);
+                buffer.append(" dBmV/");
+                appendDownstreamSnr(buffer, state);
+                buffer.append(" dB. Upstream ");
+                appendUpstreamPower(buffer, state);
+                buffer.append(" dBmV.");
+                if (packetErrorsTotal != 0) {
+                    buffer.append(" ").append(packetErrorsTotal).append(" packet errors. ");
+                }
+                long timeTaken = (System.currentTimeMillis() - startTime);
+                if (timeTaken > checkInterval) {
+                    buffer.append(" Took ").append(timeTaken - checkInterval).append("ms longer than check interval (")
+                            .append(state.timeTakenToGetStatusPage).append("ms/")
+                            .append(state.timeTakenToGetEventLog).append("ms to request pages).");
+                }
+                logger.info(buffer.toString());
+            }
 
             // Print event log if anything added
             if (!isFirst) {
@@ -151,8 +166,48 @@ public final class ModemCheck {
         }
     }
 
-    private static String isConnectedToString(boolean isConnected) {
-        return isConnected ? "Yes" : "No";
+    private static void appendDownstreamPower(StringBuilder buffer, ModemState state) {
+        assert state.downPowerMin <= state.downPowerAvg && state.downPowerAvg <= state.downPowerMax;
+        long min = Math.round(state.downPowerMin);
+        long max = Math.round(state.downPowerMax);
+        appendRange(buffer, min, max);
+        if (min < -15 || max > 15) {
+            buffer.append(" (very bad!)");
+        } else if (min < -6 || max > 9) {
+            buffer.append(" (bad!)");
+        }
+    }
+
+    private static void appendDownstreamSnr(StringBuilder buffer, ModemState state) {
+        assert state.downSnrMin <= state.downSnrAvg && state.downSnrAvg <= state.downSnrMax;
+        long min = Math.round(state.downSnrMin);
+        long max = Math.round(state.downSnrMax);
+        appendRange(buffer, min, max);
+        if (min < 35) {
+            buffer.append(" (very bad!)");
+        } else if (min < 40) {
+            buffer.append(" (bad!)");
+        }
+    }
+
+    private static void appendUpstreamPower(StringBuilder buffer, ModemState state) {
+        assert state.upstreamPowerMin <= state.upstreamPowerAvg && state.upstreamPowerAvg <= state.upstreamPowerMax;
+        long min = Math.round(state.upstreamPowerMin);
+        long max = Math.round(state.upstreamPowerMax);
+        appendRange(buffer, min, max);
+        if (min < 40 || max > 54) {
+            buffer.append(" (bad!)");
+        }
+    }
+
+    private static void appendRange(StringBuilder buffer, long min, long max) {
+        if (min == max) {
+            buffer.append(min);
+        } else if (min >= 0 && max >= 0) {
+            buffer.append(min).append("-").append(max);
+        } else {
+            buffer.append(min).append(" to ").append(max);
+        }
     }
 
 }

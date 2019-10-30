@@ -27,7 +27,9 @@ public final class LoggerUtils {
         try {
             writer = Utils.getWriter(file, true);
         } catch (FileNotFoundException e) {
-            throw new UnexpectedException("Failed to open log file \"" + file.getAbsolutePath() + "\"", e);
+            String message = "Failed to open log file \"" + file.getAbsolutePath() + "\"";
+            defaultLogger.error(message, e);
+            throw new UnexpectedException(message, e);
         }
         return new LoggerFactoryImpl_Writer(writer, isLogToStdOut, defaultLogger, file.getAbsolutePath());
     }

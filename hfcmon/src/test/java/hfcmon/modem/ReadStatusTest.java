@@ -25,12 +25,12 @@ public class ReadStatusTest {
         ParseStatusPage.parse(new StringBuilder(str), state);
 
         Assert.assertEquals(
-                "1970-01-01 10:00:00,\"Fri Oct 25 15:34:14 2019\",,-1,-1,,false,,16,3.0,5.031249999999999,6.8,39.6,40.59375,40.9,150,225,,4,42.0,43.0,44.0,,0,,,\"[Downstream]\",1,Locked,QAM256,295000000,3.0,40.5,14,21,2,Locked,QAM256,303000000,3.3,40.6,7,14,3,Locked,QAM256,311000000,4.0,40.9,12,27,4,Locked,QAM256,319000000,3.9,40.7,7,26,5,Locked,QAM256,327000000,4.0,40.9,3,22,6,Locked,QAM256,335000000,4.3,40.9,12,25,7,Locked,QAM256,343000000,3.7,40.3,10,22,8,Locked,QAM256,351000000,3.5,39.6,6,20,9,Locked,QAM256,502000000,5.4,40.1,4,30,10,Locked,QAM256,510000000,6.1,40.6,13,1,11,Locked,QAM256,518000000,6.4,40.7,4,16,12,Locked,QAM256,526000000,6.5,40.6,10,0,13,Locked,QAM256,534000000,6.3,40.6,14,0,14,Locked,QAM256,542000000,6.7,40.8,12,1,15,Locked,QAM256,550000000,6.6,40.9,10,0,16,Locked,QAM256,558000000,6.8,40.8,12,0,,\"[Upstream]\",1,Locked,\"SC-QAM Upstream\",18600000,3200000,42.0,2,Locked,\"SC-QAM Upstream\",23400000,6400000,43.0,3,Locked,\"SC-QAM Upstream\",29800000,6400000,43.0,4,Locked,\"SC-QAM Upstream\",36200000,6400000,44.0",
+                "1970-01-01 10:00:00,\"Fri Oct 25 15:34:14 2019\",,-1,-1,,Unknown,,16,3.0,5.031249999999999,6.8,39.6,40.59375,40.9,150,225,,4,42.0,43.0,44.0,,0,,,\"[Downstream]\",1,Locked,QAM256,295000000,3.0,40.5,14,21,2,Locked,QAM256,303000000,3.3,40.6,7,14,3,Locked,QAM256,311000000,4.0,40.9,12,27,4,Locked,QAM256,319000000,3.9,40.7,7,26,5,Locked,QAM256,327000000,4.0,40.9,3,22,6,Locked,QAM256,335000000,4.3,40.9,12,25,7,Locked,QAM256,343000000,3.7,40.3,10,22,8,Locked,QAM256,351000000,3.5,39.6,6,20,9,Locked,QAM256,502000000,5.4,40.1,4,30,10,Locked,QAM256,510000000,6.1,40.6,13,1,11,Locked,QAM256,518000000,6.4,40.7,4,16,12,Locked,QAM256,526000000,6.5,40.6,10,0,13,Locked,QAM256,534000000,6.3,40.6,14,0,14,Locked,QAM256,542000000,6.7,40.8,12,1,15,Locked,QAM256,550000000,6.6,40.9,10,0,16,Locked,QAM256,558000000,6.8,40.8,12,0,,\"[Upstream]\",1,Locked,\"SC-QAM Upstream\",18600000,3200000,42.0,2,Locked,\"SC-QAM Upstream\",23400000,6400000,43.0,3,Locked,\"SC-QAM Upstream\",29800000,6400000,43.0,4,Locked,\"SC-QAM Upstream\",36200000,6400000,44.0",
                 state.toCsv());
 
         Assert.assertEquals("{\"actualTime\":0,\"modemTime\":\"Fri Oct 25 15:34:14 2019\","
                 + "\"timeTakenToGetStatusPage\":-1,\"timeTakenToGetEventLog\":-1,"
-                + "\"isConnected\":false,"
+                + "\"isConnected\":null,"
                 + "\"downPowerMin\":3.0,\"downPowerAvg\":5.031249999999999,\"downPowerMax\":6.8,"
                 + "\"downSnrMin\":39.6,\"downSnrAvg\":40.59375,\"downSnrMax\":40.9,"
                 + "\"corrected\":150,\"uncorrectables\":225,"
@@ -42,7 +42,7 @@ public class ReadStatusTest {
 
         state.timeTakenToGetStatusPage = 1000;
         state.timeTakenToGetEventLog = 1001;
-        state.isConnected = true;
+        state.isConnected = Boolean.TRUE;
         Assert.assertEquals("{\"actualTime\":0,\"modemTime\":\"Fri Oct 25 15:34:14 2019\","
                 + "\"timeTakenToGetStatusPage\":1000,\"timeTakenToGetEventLog\":1001,"
                 + "\"isConnected\":true,"

@@ -17,7 +17,7 @@ public final class ModemState extends ObjectBase {
     public long timeTakenToGetStatusPage = -1; // Will be -1 if failed to request status page
     public long timeTakenToGetEventLog = -1; // Will be -1 if failed to request event log
 
-    public boolean isConnected;
+    public Boolean isConnected; // True if connected, false if not connected - null if unknown.
 
     // Calculated when "calculateStats()" is called
     public double downPowerMin, downPowerAvg, downPowerMax;
@@ -79,7 +79,15 @@ public final class ModemState extends ObjectBase {
         writer.write(timeTakenToGetStatusPage)
                 .write(timeTakenToGetEventLog).write();
 
-        writer.write(Boolean.toString(isConnected)).write();
+        { // Write isConnected
+            Boolean isConnected = this.isConnected;
+            if (isConnected != null) {
+                writer.write(isConnected.booleanValue() ? "Yes" : "No");
+            } else {
+                writer.write("Unknown");
+            }
+            writer.write();
+        }
 
         writer.write(downstreams.size())
                 .write(downPowerMin).write(downPowerAvg).write(downPowerMax)
@@ -111,7 +119,14 @@ public final class ModemState extends ObjectBase {
         writer.write("timeTakenToGetStatusPage", timeTakenToGetStatusPage);
         writer.write("timeTakenToGetEventLog", timeTakenToGetEventLog);
 
-        writer.write("isConnected", isConnected);
+        { // Write isConnected
+            Boolean isConnected = this.isConnected;
+            if (isConnected != null) {
+                writer.write("isConnected", isConnected.booleanValue());
+            } else {
+                writer.write("isConnected", null);
+            }
+        }
 
         writer.write("downPowerMin", downPowerMin);
         writer.write("downPowerAvg", downPowerAvg);

@@ -34,13 +34,14 @@ public final class Main {
             factory = LoggerUtils.getLoggerFactory(outputConfig.getLogFile(), outputConfig.logToStdOut, logger);
             logger = factory.getLogger(Main.class);
 
-            // State shared between the Modem Check Thread and the Internet Check Thread.
-            InternetState shared = new InternetState();
-
             // Start internet connection check (will create separate thread to run in)
+            InternetState shared;
             if (internetCheckConfig.enabled) {
+                shared = new InternetState();
                 OutputOutage outputOutage = new OutputOutageImpl(factory, outputConfig);
                 InternetCheck.start(internetCheckConfig, outputOutage, shared, factory);
+            } else {
+                shared = null; // Leave as null so ModemCheck knowns we're not checking the status of the internet connection.
             }
 
             // Start checking cable modem (if enabled)

@@ -36,7 +36,7 @@ There are 2 types of NBN technicians;
 - NBN employee: only sent out where the initial contractor has provided a report that they were unable to fix a customers connection issue.
 
 If you were lucky enough to convince your RSP to convince NBN to send out a technician, here's what they'll typically check;
-1. Check the tap - if it's rusted, replace the tap; (you'll typically see these taps on the power pools outside your house, unless they're underground).
+1. Check the tap - if it's rusted, replace the tap; (you'll typically see these taps on the power poles outside your house, unless they're underground).
 2. Check the network isolator box (grey box on wall outside house);
 3. Check the wall socket inside the house;
 4. *(Optional)* Replace Arris CM8200 cable modem;
@@ -92,8 +92,10 @@ In order to access your cable modems status page you either need to;
 The `[Arris CM8200 cable modem]` exposes the webpage `http://192.168.100.1` for a very short 1 to 2 minute window after a hard reset.
 To hard reset the cable modem, press and hold the reset switch on the back of your cable modem.
 
-Fun, but not useful: the cable modem exposes a Spectrum Analysiser for the same very short window after a hard reset.
+Fun, but not entirely useful: the cable modem exposes a Spectrum Analysiser for the same very short window after a hard reset.
 It can be accessed by going to `http://admin:password@192.168.100.1:8080` - i.e. `http://192.168.100.1:8080` with username `"admin"` and password `"password"`.
+For some people, the login credentials appear to be username `"admin"` and password `"admin"`.
+This webpage can be used to determine your [OFDM channel width](https://en.wikipedia.org/wiki/Orthogonal_frequency-division_multiplexing).
 
 Why does the Arris CM8200 webpage disappear? And how can we stop this!
 ---------------------------------------------------------
@@ -114,7 +116,9 @@ This monitor has 2 functions.
 The first is it stays constantly connected to `http://192.168.100.1` and writes your power/SNR values and cable modems event logs to a CSV/JSON file.
 The second is it checks if your internet is connected and writes internet outages to a CSV/JSON file.
 
-The tool is designed to help you correlate internet outages with your cable modems power/SNR values and your cable modems event logs.
+`hfcmon` is designed to help you correlate internet outages with your cable modems power/SNR values and your cable modems event logs.
+You can just look at the `hfcmon` log to diagnoise connectivity issues - see the example section below.
+The `hfcmon` log outputs the min/max power/SNR values - and will output `bad!` or `very bad!` beside a power/SNR value if it goes out of spec.
 
 Because `hfcmon` will stay constantly connected to your cable modem after a hard reset,
 you'll be able to access the cable modem's status pages at any time - assuming of course your cable modem doesn't
@@ -128,10 +132,46 @@ Prerequisite steps;
      - Check installed correctly by openning command line and running `"java -version"`. Should print `"java version 1.8.0_221"` or similar.
 
 How to run;
-  1. Download [hfcmon-0.1.jar](bin/hfcmon-0.1.jar) and [hfcmon.conf](bin/hfcmon.conf) to same directory.
-  2. Open command line and run `"java -jar hfcmon-0.1.jar"`
+  1. Download [hfcmon-0.2.jar](bin/hfcmon-0.2.jar) and [hfcmon.conf](bin/hfcmon.conf) to same directory.
+  2. Open command line and run `"java -jar hfcmon-0.2.jar"`
   3. Perform hard reset of cable modem - the app will connect to the cable modem as soon as it's available.
   4. You'll start seeing the log lines like `"Internet connected? Yes. Downstream 6 dBmV/41 dB. Upstream 44 dBmV..."` once successfully connected.
+
+Just want to monitor internet stability? Don't have an Arris CM8200 cable modem?
+---------------------------------------------------------
+
+In [hfcmon.conf](bin/hfcmon.conf), disable the Arris CM8200 cable modem check functionality;
+```
+ #
+ # Modem Check Enabled
+ #
+ # If you only want hfcmon to keep a record of when your internet is up/down, then set this to false.
+ #
+ modem.enabled=false
+```
+
+You've now got an awesome tool that will tell you when your internet is up or down!
+Makes a descending beep sound when your internet is disconnected and an ascending beep sound when your internet is reconnected - disable this by setting `internetcheck.beep` to `false`.
+Outputs internet outages to a `internet-outages.csv` and `internet-outages.json` file - configurable by changing `output.outageCsv` and `output.outageJson`.
+
+For those people who do have an Arris CM8200 cable modem - but it's annoyingly restarting very regularly - you might want to set `modem.enabled` to `false` and just monitor internet outages.
+
+Similar tools
+---------------------------------------------------------
+
+[Risbo](https://forums.whirlpool.net.au/user/135897) produces a similar tool: https://github.com/risb0r/Arris-CM8200-to-InfluxDB
+
+Comparison:
+  1. *Language:* Risbo's tool is written python. `hfcmon` is written in java. *Java's easy - learn it [here](https://docs.oracle.com/javase/tutorial/java)!*
+  2. *Output:* Risbo's tool outputs to InfluxDB (which you'll need to install). `hfcmon` outputs CSV/JSON files.
+  3. *Internet connectivity:* Risbo's tool doesn't capture the current state of your internet connection. `hfcmon` pings several hosts (configurable from the [config file](bin/hfcmon.conf))
+       and decides that your internet is down if all of these hosts can't be reached.
+       `hfcmon` is therefore the better tool if you've got internet connectivity issues.
+  4. *Visualisations:* Risbo's tool givens you an awesome dashboard of absolutely every single power/SNR value of your cable modem - see it [here](https://raw.githubusercontent.com/risb0r/Arris-CM8200-to-InfluxDB/master/images/overview.png)!
+       `hfcmon` doesn't produce any awesome visualisations like this - however it captures the very same information you could use to produce these visualisations yourself.
+	   For example, one quick and dirty option is you could open the CSV files in Excel and produce any graphs you need yourself.
+
+*Summary:* if you want cool visualisations, use Risbo's tool. If you're having internet connectivity issues, use `hfcmon`.
 
 Example outputs from HFC Monitor (hfcmon)
 ---------------------------------------------------------
@@ -147,56 +187,56 @@ However given NBN clearly aren't performing any useful active monitoring or main
 
 Example output showing a single T3 timeout resulting in internet drop out of 65 seconds;
 ```
-[INFO |2019-10-27 11:30:39.496|ModemCheck] Internet connected? Yes. Downstream 6 dBmV/41 dB. Upstream 44 dBmV. 0 packet errors. Time taken 4573ms (4027ms/546ms).
-[INFO |2019-10-27 11:30:54.512|ModemCheck] Internet connected? Yes. Downstream 6 dBmV/41 dB. Upstream 44 dBmV. 0 packet errors. Time taken 4588ms (4058ms/530ms).
-[INFO |2019-10-27 11:31:09.482|ModemCheck] Internet connected? Yes. Downstream 6 dBmV/41 dB. Upstream 44 dBmV. 399 packet errors. Time taken 4557ms (4058ms/499ms).
-[INFO |2019-10-27 11:31:24.498|ModemCheck] Internet connected? Yes. Downstream 5 dBmV/41 dB. Upstream 43 dBmV. 0 packet errors. Time taken 4573ms (4043ms/515ms).
-[INFO |2019-10-27 11:31:39.514|ModemCheck] Internet connected? Yes. Downstream 5 dBmV/41 dB. Upstream 43 dBmV. 0 packet errors. Time taken 4588ms (4042ms/546ms).
+[INFO |2019-10-27 11:30:39.496|ModemCheck] Internet connected? Yes. Downstream 6 dBmV/41 dB. Upstream 44 dBmV.
+[INFO |2019-10-27 11:30:54.512|ModemCheck] Internet connected? Yes. Downstream 6 dBmV/41 dB. Upstream 44 dBmV.
+[INFO |2019-10-27 11:31:09.482|ModemCheck] Internet connected? Yes. Downstream 6 dBmV/41 dB. Upstream 44 dBmV. 399 packet errors.
+[INFO |2019-10-27 11:31:24.498|ModemCheck] Internet connected? Yes. Downstream 5 dBmV/41 dB. Upstream 43 dBmV.
+[INFO |2019-10-27 11:31:39.514|ModemCheck] Internet connected? Yes. Downstream 5 dBmV/41 dB. Upstream 43 dBmV.
 [INFO |2019-10-27 11:31:47.142|InternetCheck] Internet disconnected
-[INFO |2019-10-27 11:31:54.500|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 43 dBmV. 16 packet errors. Time taken 4573ms (4027ms/546ms).
-[INFO |2019-10-27 11:32:09.501|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 43 dBmV. 0 packet errors. Time taken 4573ms (4027ms/546ms).
-[INFO |2019-10-27 11:32:24.517|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 43 dBmV. 0 packet errors. Time taken 4589ms (4090ms/499ms).
-[INFO |2019-10-27 11:32:39.501|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 43 dBmV. 0 packet errors. Time taken 4572ms (4026ms/546ms).
+[INFO |2019-10-27 11:31:54.500|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 43 dBmV. 16 packet errors.
+[INFO |2019-10-27 11:32:09.501|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 43 dBmV.
+[INFO |2019-10-27 11:32:24.517|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 43 dBmV.
+[INFO |2019-10-27 11:32:39.501|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 43 dBmV.
 [INFO |2019-10-27 11:32:52.163|InternetCheck] Internet reconnected after 1.083 minutes / 65 seconds
-[INFO |2019-10-27 11:32:54.531|ModemCheck] Internet connected? Yes. Downstream 6 dBmV/41 dB. Upstream 44 dBmV. 336 packet errors. Time taken 4601ms (4086ms/515ms).
+[INFO |2019-10-27 11:32:54.531|ModemCheck] Internet connected? Yes. Downstream 6 dBmV/41 dB. Upstream 44 dBmV. 336 packet errors.
 [INFO |2019-10-27 11:32:54.531|ModemCheck] Cable modem has new event log:
 "Started Unicast Maintenance Ranging - No Response received - T3 time-out;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=XX:XX:XX:XX:XX:XX;CM-QOS=1.1;CM-VER=3.1;" (date=10/27/2019 10:32, eventId=82000500, eventLevel=3)
-[INFO |2019-10-27 11:33:09.519|ModemCheck] Internet connected? Yes. Downstream 5 dBmV/41 dB. Upstream 44 dBmV. 0 packet errors. Time taken 4588ms (4042ms/546ms).
-[INFO |2019-10-27 11:33:24.520|ModemCheck] Internet connected? Yes. Downstream 5 dBmV/41 dB. Upstream 44 dBmV. 0 packet errors. Time taken 4588ms (4042ms/546ms).
-[INFO |2019-10-27 11:33:39.522|ModemCheck] Internet connected? Yes. Downstream 5 dBmV/41 dB. Upstream 44 dBmV. 0 packet errors. Time taken 4589ms (4043ms/546ms).
+[INFO |2019-10-27 11:33:09.519|ModemCheck] Internet connected? Yes. Downstream 5 dBmV/41 dB. Upstream 44 dBmV.
+[INFO |2019-10-27 11:33:24.520|ModemCheck] Internet connected? Yes. Downstream 5 dBmV/41 dB. Upstream 44 dBmV.
+[INFO |2019-10-27 11:33:39.522|ModemCheck] Internet connected? Yes. Downstream 5 dBmV/41 dB. Upstream 44 dBmV.
 ```
 
 Much worse example where internet is down for about 5 minutes, and as a result of T3 timeouts, performs an automatic restart (meaning hfcmon can no longer connect to your cable modem);
 ```
-[INFO |2019-10-27 12:35:10.335|ModemCheck] Internet connected? Yes. Downstream 7 dBmV/41 dB. Upstream 41 dBmV. 0 packet errors. Time taken 4979ms (4058ms/921ms).
-[INFO |2019-10-27 12:35:25.397|ModemCheck] Internet connected? Yes. Downstream 7 dBmV/41 dB. Upstream 41 dBmV. 0 packet errors. Time taken 5041ms (4105ms/936ms).
-[INFO |2019-10-27 12:35:40.320|ModemCheck] Internet connected? Yes. Downstream 7 dBmV/41 dB. Upstream 41 dBmV. 0 packet errors. Time taken 4963ms (4027ms/936ms).
-[INFO |2019-10-27 12:35:55.383|ModemCheck] Internet connected? Yes. Downstream 6 dBmV/41 dB. Upstream 41 dBmV. 0 packet errors. Time taken 5025ms (4089ms/936ms).
+[INFO |2019-10-27 12:35:10.335|ModemCheck] Internet connected? Yes. Downstream 7 dBmV/41 dB. Upstream 41 dBmV.
+[INFO |2019-10-27 12:35:25.397|ModemCheck] Internet connected? Yes. Downstream 7 dBmV/41 dB. Upstream 41 dBmV.
+[INFO |2019-10-27 12:35:40.320|ModemCheck] Internet connected? Yes. Downstream 7 dBmV/41 dB. Upstream 41 dBmV.
+[INFO |2019-10-27 12:35:55.383|ModemCheck] Internet connected? Yes. Downstream 6 dBmV/41 dB. Upstream 41 dBmV.
 [INFO |2019-10-27 12:36:02.641|InternetCheck] Internet disconnected
-[INFO |2019-10-27 12:36:10.368|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 41 dBmV. 0 packet errors. Time taken 5009ms (4058ms/951ms).
+[INFO |2019-10-27 12:36:10.368|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 41 dBmV.
 [INFO |2019-10-27 12:36:10.368|ModemCheck] Cable modem has new event log:
 "Started Unicast Maintenance Ranging - No Response received - T3 time-out;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=XX:XX:XX:XX:XX:XX;CM-QOS=1.1;CM-VER=3.1;" (date=10/27/2019 11:36, eventId=82000500, eventLevel=3)
-[INFO |2019-10-27 12:36:25.338|ModemCheck] Internet connected? No. Downstream 5 dBmV/41 dB. Upstream 41 dBmV. 0 packet errors. Time taken 4978ms (4042ms/936ms).
+[INFO |2019-10-27 12:36:25.338|ModemCheck] Internet connected? No. Downstream 5 dBmV/41 dB. Upstream 41 dBmV.
 [INFO |2019-10-27 12:36:35.675|InternetCheck] Internet reconnected after 0.55 minutes / 33 seconds
-[INFO |2019-10-27 12:36:40.376|ModemCheck] Internet connected? Yes. Downstream 5 dBmV/41 dB. Upstream 41 dBmV. 0 packet errors. Time taken 5015ms (4079ms/936ms).
+[INFO |2019-10-27 12:36:40.376|ModemCheck] Internet connected? Yes. Downstream 5 dBmV/41 dB. Upstream 41 dBmV.
 [INFO |2019-10-27 12:36:43.642|InternetCheck] Internet disconnected
 ...
-[INFO |2019-10-27 12:40:10.700|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 42 dBmV. 0 packet errors. Time taken 5322ms (4058ms/1248ms).
-[INFO |2019-10-27 12:40:25.700|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 42 dBmV. 0 packet errors. Time taken 5321ms (4058ms/1263ms).
-[INFO |2019-10-27 12:40:40.670|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 42 dBmV. 0 packet errors. Time taken 5290ms (4027ms/1263ms).
-[INFO |2019-10-27 12:40:55.740|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 43 dBmV. 0 packet errors. Time taken 5351ms (4072ms/1279ms).
+[INFO |2019-10-27 12:40:10.700|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 42 dBmV.
+[INFO |2019-10-27 12:40:25.700|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 42 dBmV.
+[INFO |2019-10-27 12:40:40.670|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 42 dBmV.
+[INFO |2019-10-27 12:40:55.740|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 43 dBmV.
 [INFO |2019-10-27 12:40:55.740|ModemCheck] Cable modem has new event log:
 "No Ranging Response received - T3 time-out;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=XX:XX:XX:XX:XX:XX;CM-QOS=1.1;CM-VER=3.1;" (date=10/27/2019 11:40, eventId=82000200, eventLevel=3)
-[INFO |2019-10-27 12:41:10.774|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 43 dBmV. 0 packet errors. Time taken 5384ms (4058ms/1326ms).
+[INFO |2019-10-27 12:41:10.774|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 43 dBmV.
 [INFO |2019-10-27 12:41:10.774|ModemCheck] Cable modem has new event logs:
 "No Ranging Response received - T3 time-out;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=XX:XX:XX:XX:XX:XX;CM-QOS=1.1;CM-VER=3.1;" (date=10/27/2019 11:41, eventId=82000200, eventLevel=3)
 "Ranging Request Retries exhausted;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=XX:XX:XX:XX:XX:XX;CM-QOS=1.1;CM-VER=3.1;" (date=10/27/2019 11:41, eventId=82000300, eventLevel=3)
 "16 consecutive T3 timeouts while trying to range on upstream channel 2;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=XX:XX:XX:XX:XX:XX;CM-QOS=1.1;CM-VER=3.1;" (date=10/27/2019 11:41, eventId=82000800, eventLevel=3)
-[INFO |2019-10-27 12:41:25.775|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 41 dBmV. 0 packet errors. Time taken 5384ms (4027ms/1357ms).
+[INFO |2019-10-27 12:41:25.775|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 41 dBmV.
 [INFO |2019-10-27 12:41:25.775|ModemCheck] Cable modem has new event log:
 "No Ranging Response received - T3 time-out;CM-MAC=XX:XX:XX:XX:XX:XX;CMTS-MAC=XX:XX:XX:XX:XX:XX;CM-QOS=1.1;CM-VER=3.1;" (date=10/27/2019 11:41, eventId=82000200, eventLevel=3)
-[INFO |2019-10-27 12:41:40.885|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 38 dBmV. 0 packet errors. Time taken 5493ms (4058ms/1435ms).
-[INFO |2019-10-27 12:41:55.886|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 39 dBmV. 0 packet errors. Time taken 5493ms (4011ms/1482ms).
+[INFO |2019-10-27 12:41:40.885|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 38 dBmV.
+[INFO |2019-10-27 12:41:55.886|ModemCheck] Internet connected? No. Downstream 6 dBmV/41 dB. Upstream 39 dBmV.
 ...
 (cable modem automatically restarts)
 ...
