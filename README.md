@@ -2,9 +2,11 @@
 Discussion forum
 ---------------------------------------------------------
 
-To discuss this tool, head over to the `hfcmon` whirlpool forum:
+To discuss this tool, head over to the whirlpool forums or [send me a private message](https://forums.whirlpool.net.au/user/853268).
 
-https://forums.whirlpool.net.au/thread/3wj4jy49
+Good threads to discuss your HFC issues in are;
+- [HFC Network - General Discussion](https://forums.whirlpool.net.au/thread/9271vnm3?p=-1)
+- [NBN HFC Arris modem status page](https://forums.whirlpool.net.au/thread/90ym1z23?p=-1)
 
 HFC Overview
 =========================================================
