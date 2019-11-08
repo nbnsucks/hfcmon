@@ -2,9 +2,9 @@
 Discussion forum
 ---------------------------------------------------------
 
-To discuss this tool, head over to the whirlpool forums or [send me a private message](https://forums.whirlpool.net.au/user/853268).
+Feel free to leave a Facebook comment on [nbnsucks.com](https://nbnsucks.com/) or [send me a private message](https://forums.whirlpool.net.au/user/853268).
 
-Good threads to discuss your HFC issues in are;
+Alternatively, good forums to discuss your HFC issues are;
 - [HFC Network - General Discussion](https://forums.whirlpool.net.au/thread/9271vnm3?p=-1)
 - [NBN HFC Arris modem status page](https://forums.whirlpool.net.au/thread/90ym1z23?p=-1)
 
@@ -89,7 +89,12 @@ Most people have the following setup;
 
 In order to access your cable modems status page you either need to;
   1. Connect directly to back of `[Arris CM8200 cable modem]` *(easy)*.
-  2. Add static route to `[Router with NAT]` so can access cable modem without having to plug directly into it *(advanced, not covered here)*.
+  2. Connect via your router (*advanced and barely worth trying*).
+      - In the majority of cases your `[Router with NAT]` will prevent you from connecting to `http://192.168.100.1`.
+        Some ASUS routers are reported to work. The TP-link routers I've used haven't worked.
+		I installed [openwrt](https://www.makeuseof.com/tag/what-is-openwrt-and-why-should-i-use-it-for-my-router/) which allowed my TP-link router to work.
+	  - Whichever option you choose, you're only likely to be able to very irregularly connect to `http://192.168.100.1` via your gateway.
+        I therefore unfortunately highly recommend people plug directly into their [Arris CM8200 cable modem] (option 1).
 
 The `[Arris CM8200 cable modem]` exposes the webpage `http://192.168.100.1` for a very short 1 to 2 minute window after a hard reset.
 To hard reset the cable modem, press and hold the reset switch on the back of your cable modem.
@@ -134,8 +139,8 @@ Prerequisite steps;
      - Check installed correctly by openning command line and running `"java -version"`. Should print `"java version 1.8.0_221"` or similar.
 
 How to run;
-  1. Download [hfcmon-0.2.jar](bin/hfcmon-0.2.jar) and [hfcmon.conf](bin/hfcmon.conf) to same directory.
-  2. Open command line and run `"java -jar hfcmon-0.2.jar"`
+  1. Download [hfcmon.zip](https://nbnsucks.com/hfcmon/hfcmon.zip) and extract.
+  2. Open command line and run `"java -jar hfcmon-0.3.jar"`
   3. Perform hard reset of cable modem - the app will connect to the cable modem as soon as it's available.
   4. You'll start seeing the log lines like `"Internet connected? Yes. Downstream 6 dBmV/41 dB. Upstream 44 dBmV..."` once successfully connected.
 

@@ -168,8 +168,8 @@ public final class ModemCheck {
 
     private static void appendDownstreamPower(StringBuilder buffer, ModemState state) {
         assert state.downPowerMin <= state.downPowerAvg && state.downPowerAvg <= state.downPowerMax;
-        long min = Math.round(state.downPowerMin);
-        long max = Math.round(state.downPowerMax);
+        double min = state.downPowerMin;
+        double max = state.downPowerMax;
         appendRange(buffer, min, max);
         if (min < -15 || max > 15) {
             buffer.append(" (very bad!)");
@@ -180,8 +180,8 @@ public final class ModemCheck {
 
     private static void appendDownstreamSnr(StringBuilder buffer, ModemState state) {
         assert state.downSnrMin <= state.downSnrAvg && state.downSnrAvg <= state.downSnrMax;
-        long min = Math.round(state.downSnrMin);
-        long max = Math.round(state.downSnrMax);
+        double min = state.downSnrMin;
+        double max = state.downSnrMax;
         appendRange(buffer, min, max);
         if (min < 35) {
             buffer.append(" (very bad!)");
@@ -192,15 +192,15 @@ public final class ModemCheck {
 
     private static void appendUpstreamPower(StringBuilder buffer, ModemState state) {
         assert state.upstreamPowerMin <= state.upstreamPowerAvg && state.upstreamPowerAvg <= state.upstreamPowerMax;
-        long min = Math.round(state.upstreamPowerMin);
-        long max = Math.round(state.upstreamPowerMax);
+        double min = state.upstreamPowerMin;
+        double max = state.upstreamPowerMax;
         appendRange(buffer, min, max);
         if (min < 40 || max > 54) {
             buffer.append(" (bad!)");
         }
     }
 
-    private static void appendRange(StringBuilder buffer, long min, long max) {
+    private static void appendRange(StringBuilder buffer, double min, double max) {
         if (min == max) {
             buffer.append(min);
         } else if (min >= 0 && max >= 0) {
