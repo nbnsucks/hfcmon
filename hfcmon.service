@@ -1,0 +1,18 @@
+# This file is only useful on Linux systems with systemd.
+# Make sure the WorkingDirectory exists and is owned by the User.
+# Drop this file into /etc/systemd/system/hfcmon.service .
+# Then run 'systemctl daemon-reload; systemctl enable hfcmon'.
+# Finally, run 'systemctl start hfcmon'.
+[Unit]
+Description=Monitor HFC modem
+
+[Service]
+WorkingDirectory=/srv/hfcmon
+ExecStart=/usr/bin/java -Xms128m -Xmx256m -jar hfcmon-0.3.jar
+User=nobody
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
