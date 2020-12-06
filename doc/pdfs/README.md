@@ -11,3 +11,6 @@ Authority to Alter Facilities in Residential and Small Business Premises (18 Jul
 - see section 11 to 13 of "authority-to-alter-facilities-on-resdential-and-small-businesses-premises.pdf"
   originally from https://www.nbnco.com.au/content/dam/nbnco2/documents/authority-to-alter-facilities-on-resdential-and-small-businesses-premises.pdf
 - section 13 has helpful descriptions and pictures of wall boxes, isolators, etc.
+
+US SCHEDULING IN THE DOCSIS 3.1 ERA: POTENTIAL & CHALLENGES;
+- originally from https://www.arris.com/globalassets/resources/white-papers/arris_usschedulingind3.1_whitepaper_final.pdf
